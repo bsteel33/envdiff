@@ -72,3 +72,10 @@ func TestApply_CombinedOptions(t *testing.T) {
 		t.Errorf("expected APP_HOST, got %q", out[0].Key)
 	}
 }
+
+func TestApply_EmptyInput(t *testing.T) {
+	out := filter.Apply([]filter.Result{}, filter.Options{Prefix: "APP_", OnlyMissing: true})
+	if len(out) != 0 {
+		t.Fatalf("expected 0 results for empty input, got %d", len(out))
+	}
+}
