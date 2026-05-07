@@ -87,3 +87,16 @@ func TestWalk_InvalidRoot(t *testing.T) {
 		t.Error("expected error for nonexistent root, got nil")
 	}
 }
+
+func TestWalk_ResultsAreSorted(t *testing.T) {
+	root := setupDir(t)
+	got, err := walker.Walk(root, walker.Options{})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	for i := 1; i < len(got); i++ {
+		if got[i] < got[i-1] {
+			t.Errorf("results not sorted: %q comes before %q", got[i-1], got[i])
+		}
+	}
+}
