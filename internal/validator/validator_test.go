@@ -58,6 +58,18 @@ func TestValidate_PatternMismatch(t *testing.T) {
 	}
 }
 
+func TestValidate_MultipleEmptyValues(t *testing.T) {
+	env := map[string]string{
+		"HOST": "",
+		"PORT": "",
+		"NAME": "app",
+	}
+	violations := validator.Validate(env, validator.DefaultRules())
+	if len(violations) != 2 {
+		t.Fatalf("expected 2 violations, got %d", len(violations))
+	}
+}
+
 func TestValidateKeys_AllPresent(t *testing.T) {
 	env := map[string]string{"A": "1", "B": "2"}
 	violations := validator.ValidateKeys(env, []string{"A", "B"})
