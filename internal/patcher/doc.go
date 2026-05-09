@@ -8,6 +8,12 @@
 //   - Keys missing in the right file are marked for removal.
 //   - Keys present in both but with differing values are marked for update.
 //
+// Patch operations are represented by the Op type:
+//
+//   - OpAdd    – the key should be added to the left environment.
+//   - OpRemove – the key should be removed from the left environment.
+//   - OpUpdate – the key exists in both but its value differs.
+//
 // Example usage:
 //
 //	results := diff.Compare(left, right)
