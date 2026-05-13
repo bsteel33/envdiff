@@ -37,6 +37,25 @@ func ReportJSON(w io.Writer, issues []Issue) error {
 	return enc.Encode(out)
 }
 
+// ReportSummary writes a compact summary of issues grouped by severity to w.
+func ReportSummary(w io.Writer, issues []Issue) {
+	if len(issues) == 0 {
+		fmt.Fprintln(w, "No lint issues found.")
+		return
+	}
+	counts := make(map[string]int)
+	for _, i := range issues {
+		counts[i.Severity]++
+	}
+	fmt.Fprintf(w, "Total: %d issue(s) — ", len(issues))
+	for _, sev := range []string{"error", "warning", "info"} {
+		if n, ok := counts[sev]; ok {
+			fmt.Fprintf(w, "%s: %d  ", sev, n)
+		}
+	}
+	fmt.Fprintln(w)
+}
+
 func sortedIssues(issues []Issue) []Issue {
 	copy_ := make([]Issue, len(issues))
 	copy(copy_, issues)
