@@ -98,3 +98,24 @@ func TestCompare_MultipleTargets(t *testing.T) {
 		t.Fatalf("expected 2 results, got %d", len(results))
 	}
 }
+
+func TestCompare_BaselineFileNotFound(t *testing.T) {
+	_, err := baseline.Compare(baseline.Options{
+		BaselinePath: "/nonexistent/path/base.env",
+		TargetPaths:  []string{"target.env"},
+	})
+	if err == nil {
+		t.Fatal("expected error when baseline file does not exist")
+	}
+}
+
+func TestCompare_TargetFileNotFound(t *testing.T) {
+	base := writeTempEnv(t, "KEY=value\n")
+	_, err := baseline.Compare(baseline.Options{
+		BaselinePath: base,
+		TargetPaths:  []string{"/nonexistent/path/target.env"},
+	})
+	if err == nil {
+		t.Fatal("expected error when target file does not exist")
+	}
+}
