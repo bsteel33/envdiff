@@ -81,3 +81,25 @@ func TestCompute_CustomWeights(t *testing.T) {
 		t.Fatalf("expected 5.0, got %v", s.Total)
 	}
 }
+
+func TestCompute_OnlyMissingInLeft(t *testing.T) {
+	results := []diff.Result{
+		makeResult("A", "", "v1", diff.MissingInLeft),
+		makeResult("B", "", "v2", diff.MissingInLeft),
+		makeResult("C", "", "v3", diff.MissingInLeft),
+	}
+	s := scorer.Compute(results, scorer.DefaultWeights())
+	if s.MissingInLeft != 3 {
+		t.Fatalf("expected 3 missing-in-left, got %d", s.MissingInLeft)
+	}
+	if s.MissingInRight != 0 {
+		t.Fatalf("expected 0 missing-in-right, got %d", s.MissingInRight)
+	}
+	if s.Mismatched != 0 {
+		t.Fatalf("expected 0 mismatched, got %d", s.Mismatched)
+	}
+	// default weight for MissingInLeft is 1, so total = 3*1 = 3
+	if s.Total != 3.0 {
+		t.Fatalf("expected 3.0, got %v", s.Total)
+	}
+}
