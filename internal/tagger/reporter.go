@@ -28,14 +28,10 @@ func ReportJSON(w io.Writer, tagged []TaggedResult) error {
 	}
 	entries := make([]jsonEntry, 0, len(tagged))
 	for _, t := range tagged {
-		tags := make([]string, len(t.Tags))
-		for i, tag := range t.Tags {
-			tags[i] = string(tag)
-		}
 		entries = append(entries, jsonEntry{
 			Key:    t.Result.Key,
 			Status: string(t.Result.Status),
-			Tags:   tags,
+			Tags:   tagsToStrings(t.Tags),
 		})
 	}
 	enc := json.NewEncoder(w)
@@ -43,10 +39,15 @@ func ReportJSON(w io.Writer, tagged []TaggedResult) error {
 	return enc.Encode(entries)
 }
 
-func joinTags(tags []Tag) string {
-	parts := make([]string, len(tags))
+// tagsToStrings converts a slice of Tag values to a slice of strings.
+func tagsToStrings(tags []Tag) []string {
+	result := make([]string, len(tags))
 	for i, t := range tags {
-		parts[i] = string(t)
+		result[i] = string(t)
 	}
-	return strings.Join(parts, ",")
+	return result
+}
+
+func joinTags(tags []Tag) string {
+	return strings.Join(tagsToStrings(tags), ",")
 }
