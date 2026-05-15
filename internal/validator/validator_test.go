@@ -58,6 +58,17 @@ func TestValidate_PatternMismatch(t *testing.T) {
 	}
 }
 
+func TestValidate_PatternMatch(t *testing.T) {
+	rules := []validator.Rule{
+		{Name: "digits-only", Pattern: mustCompile(t, `^\d+$`)},
+	}
+	env := map[string]string{"PORT": "8080"}
+	violations := validator.Validate(env, rules)
+	if len(violations) != 0 {
+		t.Errorf("expected no violations for matching pattern, got %d", len(violations))
+	}
+}
+
 func TestValidate_MultipleEmptyValues(t *testing.T) {
 	env := map[string]string{
 		"HOST": "",
