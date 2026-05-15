@@ -56,6 +56,29 @@ func ReportSummary(w io.Writer, issues []Issue) {
 	fmt.Fprintln(w)
 }
 
+// ReportBySeverity writes all issues to w grouped by severity level,
+// printing each severity heading followed by its issues.
+func ReportBySeverity(w io.Writer, issues []Issue) {
+	if len(issues) == 0 {
+		fmt.Fprintln(w, "No lint issues found.")
+		return
+	}
+	groups := make(map[string][]Issue)
+	for _, i := range issues {
+		groups[i.Severity] = append(groups[i.Severity], i)
+	}
+	for _, sev := range []string{"error", "warning", "info"} {
+		group, ok := groups[sev]
+		if !ok {
+			continue
+		}
+		fmt.Fprintf(w, "[%s]\n", sev)
+		for _, i := range sortedIssues(group) {
+			fmt.Fprintf(w, "  %s\n", FormatIssue(i))
+		}
+	}
+}
+
 func sortedIssues(issues []Issue) []Issue {
 	copy_ := make([]Issue, len(issues))
 	copy(copy_, issues)
